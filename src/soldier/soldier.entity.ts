@@ -101,25 +101,27 @@ export class Soldier {
 
     @OneToOne(() => Address, address => address.soldier)
     address: Address;
-  
+
     @OneToOne(() => Enrollment, enrollment => enrollment.soldier)
+    @JoinColumn({ name: 'enrollment_id' })
     enrollment: Enrollment;
-  
+
     @OneToOne(() => Card, card => card.soldier)
     card: Card;
-  
+
     @OneToMany(() => Confine, confine => confine.soldier)
     confine: Confine[];
-  
+
     @OneToMany(() => Note, note => note.soldier)
     note: Note[];
-  
+
     @OneToMany(() => Removed, removed => removed.soldier)
     removedHistory: Removed[];
-  
+
     @OneToMany(() => GateLog, gateLog => gateLog.soldier)
     gateLogs: GateLog[];
-  
+
     @OneToMany(() => PhoneNumber, phoneNumber => phoneNumber.soldier)
+    @JoinColumn({ name: 'code' })
     phoneNumbers: PhoneNumber[];
 }

@@ -28,6 +28,9 @@ export class Enrollment {
   @Column({ nullable: true })
   unit_enrollment_date: Date;
 
+  @Column({nullable: true})
+  street_status: string
+
   @Column({ nullable: true })
   unit_job: string;
 
@@ -38,8 +41,10 @@ export class Enrollment {
   unit_side_job: string;
 
   @ManyToOne(() => Unit, unit => unit.enrollments)
+  @JoinColumn({ name: 'unit_code' })
   unit: Unit;
 
   @ManyToOne(() => Soldier, soldier => soldier.enrollment)
+  @JoinColumn({ name: 'id' })
   soldier: Soldier;
 }

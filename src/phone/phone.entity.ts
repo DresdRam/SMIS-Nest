@@ -1,5 +1,4 @@
 import { Soldier } from "src/soldier/soldier.entity";
-import { Category } from "src/category/category.entity"
 import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
 
 @Entity()
@@ -11,5 +10,6 @@ export class PhoneNumber {
   phone_number: string;
 
   @ManyToOne(() => Soldier, soldier => soldier.phoneNumbers)
+  @JoinColumn({ name: 'soldier_id' })
   soldier: Soldier;
 }
