@@ -41,7 +41,7 @@ export class SoldierService {
             .innerJoin('e.unit', 'u', 'e.unit_code = u.code')
             .where('s.national_id = :national_id', { national_id: national_id })
             .andWhere("s.removed = 0")
-            .getRawOne();;
+            .getRawOne();
 
         if (soldier) {
             const removed_buffer = Buffer.from(soldier.removed);
@@ -55,47 +55,56 @@ export class SoldierService {
     }
 
     async create(body: CreateSoldierDto) {
-        
-        const unit = this.unitRepository.create({
-            code: 2,
-            name: "عمليات"
-        });
-        
-        const enrollment = this.enrollmentRepository.create({
-            enrollment_date: body.enrollment_date,
-            agenda_id: body.agenda_id,
-            enrollment_status: body.enrollment_status,
-            holiday_group: body.holiday_group,
-            police_number: body.police_number,
-            join_camp_date: body.join_camp_date,
-            quit_camp_date: body.quit_camp_date,
-            unit_enrollment_date: body.unit_enrollment_date,
-            unit_job: body.unit_job,
-            street_status: body.street_status,
-            unit_side_job: body.unit_side_job,
-            unit: unit
-        });
 
-        const soldier = this.soldierRepository.create({
-            name: body.name,
-            national_id: body.national_id,
-            birth_date: body.birth_date,
-            education: body.education,
-            phone_number: body.phone_number,
-            rating: body.rating,
-            rating_type: body.rating_type,
-            rating_status: body.rating_status,
-            religion: body.religion,
-            removed: body.removed,
-            triple_digit_number: body.triple_digit_number,
-            medical_condition: body.medical_condition,
-            medical_condition_type: body.medical_condition_type,
-            job: body.job,
-            status: body.status,
-            enrollment: enrollment
-        });
-
-        return this.soldierRepository.save(soldier);
+        return this.soldierRepository
+            .createQueryBuilder()
+            .insert()
+            .into(Enrollment)
+            .values({
+                enrollment_date: body.enrollment_date,
+                agenda_id: body.agenda_id,
+                enrollment_status: body.enrollment_status,
+                holiday_group: body.holiday_group,
+                police_number: body.police_number,
+                join_camp_date: body.join_camp_date,
+                quit_camp_date: body.quit_camp_date,
+                unit_enrollment_date: body.unit_enrollment_date,
+                unit_job: body.unit_job,
+                street_status: body.street_status,
+                unit_side_job: body.unit_side_job,
+                unit: {
+                    code: 2
+                }
+            })
+            .execute().then((enrollment) => {
+                if (enrollment) {
+                    return this.soldierRepository
+                        .createQueryBuilder()
+                        .insert()
+                        .into(Soldier)
+                        .values({
+                            name: body.name,
+                            national_id: body.national_id,
+                            birth_date: body.birth_date,
+                            education: body.education,
+                            phone_number: body.phone_number,
+                            rating: body.rating,
+                            rating_type: body.rating_type,
+                            rating_status: body.rating_status,
+                            religion: body.religion,
+                            removed: body.removed,
+                            triple_digit_number: body.triple_digit_number,
+                            medical_condition: body.medical_condition,
+                            medical_condition_type: body.medical_condition_type,
+                            job: body.job,
+                            status: body.status,
+                            enrollment: {
+                                id: enrollment.raw.insertId
+                            },
+                        })
+                        .execute()
+                }
+            });
     }
 
     soldierSelection = [

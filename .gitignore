@@ -37,3 +37,4 @@ lerna-debug.log*
 #Extra
 ormconfig.json
 RUN.bat
+src/soldier/soldier.service.ts

@@ -10,6 +10,5 @@ export class Unit {
   name: string;
 
   @OneToMany(() => Enrollment, enrollment => enrollment.unit)
-  @JoinColumn({ name: 'code' })
   enrollments: Enrollment[];
 }

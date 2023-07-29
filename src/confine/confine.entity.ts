@@ -1,26 +1,27 @@
 import { Soldier } from "src/soldier/soldier.entity";
-import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm"
 
 @Entity()
 export class Confine {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   imprisoned: boolean;
 
-  @Column()
-  start_date: string;
+  @Column({ nullable: false })
+  start_date: Date;
 
   @Column({ nullable: true })
-  end_date: string;
+  end_date: Date;
 
   @Column({ nullable: true })
-  reason: Date;
+  reason: string;
 
   @Column({ nullable: true })
-  prison_reason: Date;
+  prison_reason: string;
 
   @ManyToOne(() => Soldier, soldier => soldier.confine)
+  @JoinColumn({ name: 'soldier_id' })
   soldier: Soldier;
 }

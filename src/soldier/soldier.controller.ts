@@ -6,7 +6,7 @@ import { Serialize } from '../interceptor/serialize.interceptor';
 @Controller('soldier')
 export class SoldierController {
 
-    constructor(public soldierService: SoldierService) { }
+    constructor(private soldierService: SoldierService) { }
 
     @Get('/get-soldier')
     getSoldier(@Query('id') id: string, @Query('national_id') national_id: string) {
