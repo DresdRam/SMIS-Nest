@@ -5,9 +5,42 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Soldier } from "./soldier.entity";
 import { Enrollment } from "src/enrollment/enrollment.entity";
 import { Unit } from "src/unit/unit.entity";
+import { Normalize } from "src/util/normalize.util";
 
 @Injectable()
 export class SoldierService {
+
+    private soldierSelection = [
+        's.id as id',
+        's.birth_date as birth_date',
+        's.education as education',
+        's.name as name',
+        's.national_id as national_id',
+        's.phone_number as phone_number',
+        's.rating as rating',
+        's.rating_status as rating_status',
+        's.religion as religion',
+        's.removed as removed',
+        's.triple_digit_number as triple_digit_number',
+        's.card_id as card_id',
+        's.rating_type as rating_type',
+        's.medical_condition as medical_condition',
+        's.job as job',
+        's.medical_condition_type as medical_condition_type',
+        's.status as status',
+        'e.enrollment_date as enrollment_date',
+        'e.agenda_id as agenda_id',
+        'e.enrollment_status as enrollment_status',
+        'e.holiday_group as holiday_group',
+        'e.police_number as police_number',
+        'e.join_camp_date as join_camp_date',
+        'e.quit_camp_date as quit_camp_date',
+        'e.unit_enrollment_date as unit_enrollment_date',
+        'e.unit_job as unit_job',
+        'e.street_status as street_status',
+        'e.unit_side_job as unit_side_job',
+        'u.name as unit'
+    ];
 
     constructor(@InjectRepository(Soldier) private soldierRepository: Repository<Soldier>, @InjectRepository(Enrollment) private enrollmentRepository: Repository<Enrollment>, @InjectRepository(Unit) private unitRepository: Repository<Unit>) { }
 
@@ -22,15 +55,7 @@ export class SoldierService {
             .andWhere("s.removed = 0")
             .getRawOne();
 
-        if (soldier) {
-            const removed_buffer = Buffer.from(soldier.removed);
-            const rating_buffer = Buffer.from(soldier.rating_status);
-
-            soldier.removed = Boolean(removed_buffer.readInt8());
-            soldier.rating_status = Boolean(rating_buffer.readInt8());
-        }
-
-        return soldier;
+        return this.reformBooleanInSoldier(soldier);
     }
 
     async findOneByNationalId(national_id: number) {
@@ -43,20 +68,25 @@ export class SoldierService {
             .andWhere("s.removed = 0")
             .getRawOne();
 
-        if (soldier) {
-            const removed_buffer = Buffer.from(soldier.removed);
-            const rating_buffer = Buffer.from(soldier.rating_status);
+        return this.reformBooleanInSoldier(soldier);
+    }
 
-            soldier.removed = Boolean(removed_buffer.readInt8());
-            soldier.rating_status = Boolean(rating_buffer.readInt8());
-        }
+    async searchByName(nameQuery: string) {
+        const normalizedName: string = Normalize.normalizeName(nameQuery)
 
-        return soldier;
+        return await this.soldierRepository
+            .createQueryBuilder('s')
+            .select(this.soldierSelection)
+            .innerJoin('s.enrollment', 'e', 's.enrollment_id = e.id')
+            .innerJoin('e.unit', 'u', 'e.unit_code = u.code')
+            .where('s.name LIKE :name', { name: `${normalizedName}%` })
+            .andWhere("s.removed = 0")
+            .getRawMany();
     }
 
     async create(body: CreateSoldierDto) {
 
-        return this.soldierRepository
+        return await this.soldierRepository
             .createQueryBuilder()
             .insert()
             .into(Enrollment)
@@ -102,39 +132,30 @@ export class SoldierService {
                                 id: enrollment.raw.insertId
                             },
                         })
-                        .execute()
+                        .execute().catch((error: any) => {
+                            return {
+                                statusCode: 400,
+                                message: error.message
+                            }
+                        });
+                }
+            }).catch((error: any) => {
+                return {
+                    statusCode: 400,
+                    message: error.message
                 }
             });
     }
 
-    soldierSelection = [
-        's.id as id',
-        's.birth_date as birth_date',
-        's.education as education',
-        's.name as name',
-        's.national_id as national_id',
-        's.phone_number as phone_number',
-        's.rating as rating',
-        's.rating_status as rating_status',
-        's.religion as religion',
-        's.removed as removed',
-        's.triple_digit_number as triple_digit_number',
-        's.card_id as card_id',
-        's.rating_type as rating_type',
-        's.medical_condition as medical_condition',
-        's.job as job',
-        's.medical_condition_type as medical_condition_type',
-        's.status as status',
-        'e.enrollment_date as enrollment_date',
-        'e.agenda_id as agenda_id',
-        'e.enrollment_status as enrollment_status',
-        'e.holiday_group as holiday_group',
-        'e.police_number as police_number',
-        'e.join_camp_date as join_camp_date',
-        'e.quit_camp_date as quit_camp_date',
-        'e.unit_enrollment_date as unit_enrollment_date',
-        'e.unit_job as unit_job',
-        'e.street_status as street_status',
-        'e.unit_side_job as unit_side_job',
-        'u.name as unit']
+
+    private reformBooleanInSoldier(soldier: any) {
+        if (soldier) {
+            const removed_buffer = Buffer.from(soldier.removed);
+            const rating_buffer = Buffer.from(soldier.rating_status);
+
+            soldier.removed = Boolean(removed_buffer.readInt8());
+            soldier.rating_status = Boolean(rating_buffer.readInt8());
+        }
+        return soldier;
+    }
 }

@@ -4,6 +4,7 @@ import { Confine } from './confine.entity';
 import { Repository } from 'typeorm';
 import { CreateConfine } from './dto/createConfine.dto';
 import { format } from 'date-fns';
+import { Normalize } from 'src/util/normalize.util';
 
 @Injectable()
 export class ConfineService {
@@ -13,7 +14,7 @@ export class ConfineService {
     constructor(@InjectRepository(Confine) private confineRepository: Repository<Confine>) { }
 
     async findAll() {
-        return this.confineRepository
+        return await this.confineRepository
             .createQueryBuilder()
             .select([
                 'id',
@@ -30,7 +31,7 @@ export class ConfineService {
     }
 
     async findOne(national_id: number) {
-        return this.confineRepository
+        return await this.confineRepository
             .createQueryBuilder('c')
             .select([
                 'c.id as id',
@@ -49,8 +50,30 @@ export class ConfineService {
             .getRawOne();
     }
 
+    async searchByName(nameQuery: string) {
+        const normalizedName: string = Normalize.normalizeName(nameQuery)
+
+        return await this.confineRepository
+            .createQueryBuilder('c')
+            .select([
+                'c.id as id',
+                'c.soldier_id as soldier_id',
+                's.name as name',
+                's.national_id as national_id',
+                'c.start_date as start_date',
+                'c.end_date as end_date',
+                'c.imprisoned as imprisoned',
+                'c.reason as reason',
+                'c.prison_reason as prison_reason'
+            ])
+            .innerJoin('c.soldier', 's', 's.id = c.soldier_id')
+            .where('s.name LIKE :name', { name: `${normalizedName}%` })
+            .orderBy('id', 'DESC')
+            .getRawMany();
+    }
+
     async delete(id: number) {
-        return this.confineRepository
+        return await this.confineRepository
             .createQueryBuilder()
             .delete()
             .where('id = :id', { id: id })
@@ -58,7 +81,7 @@ export class ConfineService {
     }
 
     async create(body: CreateConfine) {
-        return this.confineRepository
+        return await this.confineRepository
             .createQueryBuilder()
             .insert()
             .into(Confine)

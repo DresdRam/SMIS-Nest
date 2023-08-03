@@ -17,10 +17,13 @@ export class ConfineController {
         return this.confineService.findOne(parseInt(national_id));
     }
 
+    @Get('/search')
+    searchByName(@Query('name') name: string) {
+        return this.confineService.searchByName(name);
+    }
+
     @Post('/add-confine')
     addSoldierConfine(@Body() body: CreateConfine) {
         return this.confineService.create(body);
     }
-
-
 }

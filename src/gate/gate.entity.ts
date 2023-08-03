@@ -25,5 +25,6 @@ export class GateLog {
   sub_type: number;
 
   @ManyToOne(() => Soldier, soldier => soldier.gateLogs)
+  @JoinColumn({ name: "soldier_id" })
   soldier: Soldier;
 }
