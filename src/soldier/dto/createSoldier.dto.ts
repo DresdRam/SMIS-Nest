@@ -71,6 +71,9 @@ export class CreateSoldierDto {
     unit_enrollment_date: string;
 
     @IsString()
+    unit: string;
+
+    @IsString()
     unit_job: string;
 
     street_status: string;

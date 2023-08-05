@@ -86,6 +86,9 @@ export class SoldierService {
 
     async create(body: CreateSoldierDto) {
 
+        body.name = Normalize.normalizeName(body.name);
+        const unit_code = (body.unit) ? UnitEnum[body.unit] : 1;
+
         return await this.soldierRepository
             .createQueryBuilder()
             .insert()
@@ -103,7 +106,7 @@ export class SoldierService {
                 street_status: body.street_status,
                 unit_side_job: body.unit_side_job,
                 unit: {
-                    code: 2
+                    code: unit_code
                 }
             })
             .execute().then((enrollment) => {
@@ -132,7 +135,14 @@ export class SoldierService {
                                 id: enrollment.raw.insertId
                             },
                         })
-                        .execute().catch((error: any) => {
+                        .execute()
+                        .then((results: any) => {
+                            return {
+                                statusCode: 200,
+                                message: "Created Soldier Successfully."
+                            }
+                        })
+                        .catch((error: any) => {
                             return {
                                 statusCode: 400,
                                 message: error.message
@@ -147,6 +157,17 @@ export class SoldierService {
             });
     }
 
+    async updateSoldier(body: any) {
+
+    }
+
+    async updateSoldierEnrollment(body: any) {
+
+    }
+
+    async updateSoldierRating(body: any) {
+
+    }
 
     private reformBooleanInSoldier(soldier: any) {
         if (soldier) {
