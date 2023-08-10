@@ -28,29 +28,6 @@ export class SoldierController {
         }
     }
 
-    @Get('/get-image')
-    getSoldierImage(@Query('national_id') national_id: string, @Res() response: Response) {
-
-        if (national_id) {
-
-            const path = join(process.cwd(), 'data', 'pics', `${national_id}.jpg`);
-            const defaultPath = join(process.cwd(), 'data', 'pics', 'default.jpg');
-
-            if (existsSync(path)) {
-                const file = createReadStream(path);
-                file.pipe(response);
-            } else {
-                const file = createReadStream(defaultPath);
-                file.pipe(response);
-            }
-        }
-
-        return {
-            statusCode: 400,
-            message: "Bad Params."
-        }
-    }
-
     @Get('/search')
     getSoldiersByName(@Query('name') name: string) {
 

@@ -24,6 +24,7 @@ import { PhoneModule } from './phone/phone.module';
 import { PhoneNumber } from './phone/phone.entity';
 import { RemovedModule } from './removed/removed.module';
 import { Removed } from './removed/removed.entity';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -47,6 +48,7 @@ import { Removed } from './removed/removed.entity';
   NoteModule,
   CategoryModule,
   PhoneModule,
-  RemovedModule]
+  RemovedModule,
+  ImageModule]
 })
 export class AppModule { }

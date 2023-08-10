@@ -14,8 +14,10 @@ export class Note {
   date: Date;
 
   @ManyToOne(() => Soldier, soldier => soldier.note)
+  @JoinColumn({ name: 'soldier_id' })
   soldier: Soldier;
 
   @ManyToOne(() => Category, category => category.notes)
+  @JoinColumn({ name: 'category_id' })
   category: Category;
 }
