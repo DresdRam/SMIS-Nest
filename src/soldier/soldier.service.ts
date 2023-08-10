@@ -6,6 +6,7 @@ import { Soldier } from "./soldier.entity";
 import { Enrollment } from "src/enrollment/enrollment.entity";
 import { Unit } from "src/unit/unit.entity";
 import { Normalize } from "src/util/normalize.util";
+import { UnitEnum } from "src/enum/unit.enum";
 
 @Injectable()
 export class SoldierService {

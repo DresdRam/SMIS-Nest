@@ -1,4 +1,4 @@
-enum GovernorateEnum {
+export enum GovernorateEnum {
     "القاهرة" = 1,
     "أسوان" = 2,
     "أسيوط" = 3,

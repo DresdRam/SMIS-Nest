@@ -5,7 +5,8 @@ import { Repository } from 'typeorm';
 import { Soldier } from 'src/soldier/soldier.entity';
 import { SoldierLogs } from './dto/soldierLogs.dto';
 import { format } from 'date-fns';
-import { CreateLog } from './dto/createLogs.dto';
+import { CreateLog } from './dto/createLog.dto';
+import { GateSubTypes } from 'src/enum/gateSubtypes.enum';
 
 @Injectable()
 export class GateService {
@@ -120,6 +121,9 @@ export class GateService {
     }
 
     async createLog(body: CreateLog) {
+
+        const subtype: number = (body.sub_type) ? GateSubTypes[body.sub_type] : 6;
+
         return await this.gateRepository
             .createQueryBuilder()
             .insert()
@@ -127,7 +131,7 @@ export class GateService {
             .values({
                 date: body.date,
                 type: body.type,
-                sub_type: body.sub_type,
+                sub_type: subtype,
                 section: body.section,
                 time_section: body.time_section,
                 overtime: body.overtime,

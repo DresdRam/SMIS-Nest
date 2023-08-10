@@ -11,8 +11,8 @@ export class CreateLog {
     @IsNumber()
     soldier_id: number;
 
-    @IsNumber()
-    sub_type: number;
+    @IsString()
+    sub_type: string;
 
     @IsString()
     section: string;

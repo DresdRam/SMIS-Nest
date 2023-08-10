@@ -10,6 +10,6 @@ export class Card {
   uid: string;
 
   @OneToOne(() => Soldier, soldier => soldier.card)
-  @JoinColumn()
+  @JoinColumn({ name: 'soldier_id' })
   soldier: Soldier;
 }

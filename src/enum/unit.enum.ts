@@ -1,4 +1,4 @@
-enum UnitEnum {
+export enum UnitEnum {
     "مستجدين" = 1,
     "عمليات" = 2,
     "ش.ادارية" = 3,
