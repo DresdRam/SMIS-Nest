@@ -1,6 +1,7 @@
-import { IsString, IsNumber, IsBoolean, IsDate, isDate } from 'class-validator';
+import { IsString, IsNumber, IsBoolean, IsDate, isDate, IsOptional } from 'class-validator';
+import { EnrollmentDto } from 'src/model/enrollment/dto/enrollment.dto';
 
-export class CreateSoldierDto {
+export class SoldierDto {
 
     @IsString()
     name: string;
@@ -44,6 +45,8 @@ export class CreateSoldierDto {
     @IsString()
     job: string;
 
+    @IsNumber()
+    @IsOptional()
     status: number;
 
     @IsString()
@@ -76,7 +79,13 @@ export class CreateSoldierDto {
     @IsString()
     unit_job: string;
 
+    @IsString()
+    @IsOptional()
     street_status: string;
 
+    @IsString()
+    @IsOptional()
     unit_side_job: string;
+
+    enrollment: EnrollmentDto;
 }

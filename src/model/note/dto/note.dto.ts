@@ -6,8 +6,5 @@ export class NoteDto{
     category: string;
 
     @IsString()
-    date: string;
-
-    @IsString()
     note: string;
 }

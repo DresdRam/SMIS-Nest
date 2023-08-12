@@ -1,7 +1,7 @@
 import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator"
 import { NoteDto } from "src/model/note/dto/note.dto";
 
-export class UpdateRatingDto{
+export class RatingDto{
 
     @IsNumber()
     nationalId: number;
@@ -10,10 +10,10 @@ export class UpdateRatingDto{
     rating: string;
 
     @IsBoolean()
-    ratingStatus: string;
+    rating_status: boolean;
 
     @IsString()
-    ratingType: string;
+    rating_type: string;
 
     notes: NoteDto[];
 }

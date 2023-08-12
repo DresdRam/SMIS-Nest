@@ -4,10 +4,10 @@ import { SoldierService } from './soldier.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Soldier } from './entity/soldier.entity';
 import { Enrollment } from '../enrollment/entity/enrollment.entity';
-import { Unit } from '../unit/entity/unit.entity';
+import { NoteModule } from '../note/note.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Soldier, Enrollment, Unit])],
+  imports: [TypeOrmModule.forFeature([Soldier, Enrollment]), NoteModule],
   controllers: [SoldierController],
   providers: [SoldierService]
 })

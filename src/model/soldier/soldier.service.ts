@@ -1,4 +1,3 @@
-import { CreateSoldierDto } from "./dto/createSoldier.dto";
 import { Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -7,12 +6,20 @@ import { Normalize } from "src/common/util/normalize.util";
 import { UnitEnum } from "src/common/enum/unit.enum";
 import { updateSoldierDto } from "./dto/updateSoldier.dto";
 import { Enrollment } from "../enrollment/entity/enrollment.entity";
-import { Unit } from "../unit/entity/unit.entity";
+import { RatingDto } from "./dto/rating.dto";
+import { MedicalDto } from "./dto/medical.dto";
+import { NoteService } from "../note/note.service";
+import { EnrollmentService } from "../enrollment/enrollment.service";
+import { SoldierDto } from "./dto/soldier.dto";
+import { EnrollmentDto } from "../enrollment/dto/enrollment.dto";
 
 @Injectable()
 export class SoldierService {
 
-    constructor(@InjectRepository(Soldier) private soldierRepository: Repository<Soldier>, @InjectRepository(Enrollment) private enrollmentRepository: Repository<Enrollment>, @InjectRepository(Unit) private unitRepository: Repository<Unit>) { }
+    constructor(
+        @InjectRepository(Soldier) private soldierRepository: Repository<Soldier>,
+        private readonly enrollmentService: EnrollmentService,
+        private readonly noteService: NoteService) { }
 
     async findOne(id: number) {
 
@@ -58,133 +65,106 @@ export class SoldierService {
             .getMany();
     }
 
-    async create(body: CreateSoldierDto) {
+    async create(soldier: SoldierDto) {
 
-        body.name = Normalize.normalizeName(body.name);
-        const unit_code = (body.unit) ? UnitEnum[body.unit] : 1;
+        soldier.name = Normalize.normalizeName(soldier.name);
 
-        return await this.soldierRepository
-            .createQueryBuilder()
-            .insert()
-            .into(Enrollment)
-            .values({
-                enrollment_date: body.enrollment_date,
-                agenda_id: body.agenda_id,
-                enrollment_status: body.enrollment_status,
-                holiday_group: body.holiday_group,
-                police_number: body.police_number,
-                join_camp_date: body.join_camp_date,
-                quit_camp_date: body.quit_camp_date,
-                unit_enrollment_date: body.unit_enrollment_date,
-                unit_job: body.unit_job,
-                street_status: body.street_status,
-                unit_side_job: body.unit_side_job,
-                unit: {
-                    code: unit_code
-                }
-            })
-            .execute().then((enrollment) => {
-                if (enrollment) {
-                    return this.soldierRepository
-                        .createQueryBuilder()
-                        .insert()
-                        .into(Soldier)
-                        .values({
-                            name: body.name,
-                            national_id: body.national_id,
-                            birth_date: body.birth_date,
-                            education: body.education,
-                            phone_number: body.phone_number,
-                            rating: body.rating,
-                            rating_type: body.rating_type,
-                            rating_status: body.rating_status,
-                            religion: body.religion,
-                            removed: body.removed,
-                            triple_digit_number: body.triple_digit_number,
-                            medical_condition: body.medical_condition,
-                            medical_condition_type: body.medical_condition_type,
-                            job: body.job,
-                            status: body.status,
-                            enrollment: {
-                                id: enrollment.raw.insertId
-                            },
-                        })
-                        .execute()
-                        .then((results: any) => {
+        return this.enrollmentService.create(soldier.enrollment).then((enrollment) => {
+            if (enrollment) {
+                return this.soldierRepository
+                    .createQueryBuilder()
+                    .insert()
+                    .into(Soldier)
+                    .values({
+                        name: soldier.name,
+                        national_id: soldier.national_id,
+                        birth_date: soldier.birth_date,
+                        education: soldier.education,
+                        phone_number: soldier.phone_number,
+                        rating: soldier.rating,
+                        rating_type: soldier.rating_type,
+                        rating_status: soldier.rating_status,
+                        religion: soldier.religion,
+                        removed: soldier.removed,
+                        triple_digit_number: soldier.triple_digit_number,
+                        medical_condition: soldier.medical_condition,
+                        medical_condition_type: soldier.medical_condition_type,
+                        job: soldier.job,
+                        status: soldier.status,
+                        enrollment: {
+                            id: enrollment.raw.insertId
+                        },
+                    })
+                    .execute()
+                    .then((results: any) => {
+                        if (results) {
                             return {
                                 statusCode: 200,
                                 message: "Created Soldier Successfully."
                             }
-                        })
-                        .catch((error: any) => {
-                            return {
-                                statusCode: 400,
-                                message: error.message
-                            }
-                        });
-                }
-            }).catch((error: any) => {
-                return {
-                    statusCode: 400,
-                    message: error.message
-                }
-            });
+                        }
+                    })
+                    .catch((error: any) => {
+                        return {
+                            statusCode: 400,
+                            message: error.message
+                        }
+                    });
+            }
+        }).catch((error: any) => {
+            return {
+                statusCode: 400,
+                message: error.message
+            }
+        });
     }
 
-    async updateSoldier(body: updateSoldierDto) {
-        body.name = Normalize.normalizeName(body.name);
-        const unit_code = (body.enrollment.unit.name) ? UnitEnum[body.enrollment.unit.name] : 1;
+    async updateSoldier(id: number, soldier: updateSoldierDto) {
+        soldier.name = Normalize.normalizeName(soldier.name);
+        const unit_code = (soldier.enrollment.unit.name) ? UnitEnum[soldier.enrollment.unit.name] : 1;
 
-        return await this.soldierRepository
+        return this.soldierRepository
             .createQueryBuilder()
-            .update(Enrollment)
+            .update(Soldier)
             .set({
-                enrollment_date: body.enrollment.enrollment_date,
-                agenda_id: body.enrollment.agenda_id,
-                enrollment_status: body.enrollment.enrollment_status,
-                holiday_group: body.enrollment.holiday_group,
-                police_number: body.enrollment.police_number,
-                join_camp_date: body.enrollment.join_camp_date,
-                quit_camp_date: body.enrollment.quit_camp_date,
-                unit_enrollment_date: body.enrollment.unit_enrollment_date,
-                unit_job: body.enrollment.unit_job,
-                street_status: body.enrollment.street_status,
-                unit_side_job: body.enrollment.unit_side_job,
-                unit: {
-                    code: unit_code
-                }
+                name: soldier.name,
+                national_id: soldier.national_id,
+                birth_date: soldier.birth_date,
+                education: soldier.education,
+                phone_number: soldier.phone_number,
+                religion: soldier.religion,
+                triple_digit_number: soldier.triple_digit_number,
+                job: soldier.job,
+                enrollment: {
+                    enrollment_date: soldier.enrollment.enrollment_date,
+                    agenda_id: soldier.enrollment.agenda_id,
+                    enrollment_status: soldier.enrollment.enrollment_status,
+                    holiday_group: soldier.enrollment.holiday_group,
+                    police_number: soldier.enrollment.police_number,
+                    join_camp_date: soldier.enrollment.join_camp_date,
+                    quit_camp_date: soldier.enrollment.quit_camp_date,
+                    unit_enrollment_date: soldier.enrollment.unit_enrollment_date,
+                    unit_job: soldier.enrollment.unit_job,
+                    street_status: soldier.enrollment.street_status,
+                    unit_side_job: soldier.enrollment.unit_side_job,
+                    unit: {
+                        code: unit_code
+                    }
+                },
             })
-            .execute().then((results) => {
+            .where('id = :id', { id: id })
+            .execute()
+            .then((results: any) => {
                 if (results) {
-                    return this.soldierRepository
-                        .createQueryBuilder()
-                        .update(Soldier)
-                        .set({
-                            name: body.name,
-                            national_id: body.national_id,
-                            birth_date: body.birth_date,
-                            education: body.education,
-                            phone_number: body.phone_number,
-                            religion: body.religion,
-                            triple_digit_number: body.triple_digit_number,
-                            job: body.job,
-                            enrollment: {
-                                id: results.raw.insertId
-                            },
-                        })
-                        .execute()
-                        .then((results: any) => {
-                            return {
-                                statusCode: 200,
-                                message: "Created Soldier Successfully."
-                            }
-                        })
-                        .catch((error: any) => {
-                            return {
-                                statusCode: 400,
-                                message: error.message
-                            }
-                        });
+                    return {
+                        statusCode: 200,
+                        message: "Updated Soldier Successfully."
+                    }
+                }
+
+                return {
+                    statusCode: 404,
+                    message: "Not Found."
                 }
             }).catch((error: any) => {
                 return {
@@ -194,11 +174,98 @@ export class SoldierService {
             });
     }
 
-    async updateSoldierEnrollment(body: any) {
+    async updateSoldierRating(id: number, rating: RatingDto) {
 
+        this.soldierRepository
+            .createQueryBuilder()
+            .update(Soldier)
+            .set({
+                rating: rating.rating,
+                rating_status: rating.rating_status,
+                rating_type: rating.rating_type
+            })
+            .where('id = :id', { id: id })
+            .execute().then((results: any) => {
+                if (results) {
+
+                    this.noteService.createNotes(id, rating.notes);
+
+                    return {
+                        statusCode: 200,
+                        message: "Updated Soldier Rating Successfully."
+                    }
+                }
+
+                return {
+                    statusCode: 404,
+                    message: "Not Found."
+                }
+            }).catch((error: any) => {
+                return {
+                    statusCode: 400,
+                    message: error.message
+                }
+            });;
     }
 
-    async updateSoldierRating(body: any) {
+    async updateSoldierJob(id: number, job: string) {
+        this.soldierRepository
+            .createQueryBuilder()
+            .update(Soldier)
+            .set({
+                job: job
+            })
+            .where('id = :id', { id: id })
+            .execute().then((results: any) => {
+                if (results) {
+                    return {
+                        statusCode: 200,
+                        message: "Updated Soldier Job Successfully."
+                    }
+                }
 
+                return {
+                    statusCode: 404,
+                    message: "Not Found."
+                }
+            }).catch((error: any) => {
+                return {
+                    statusCode: 400,
+                    message: error.message
+                }
+            });;
+    }
+
+    async updateSoldierMedical(id: number, medical: MedicalDto) {
+        this.soldierRepository
+            .createQueryBuilder()
+            .update(Soldier)
+            .set({
+                medical_condition: medical.medicalCondition,
+                medical_condition_type: medical.medicalConditionType,
+                rating_status: medical.ratingStatus
+            })
+            .where('id = :id', { id: id })
+            .execute().then((results: any) => {
+                if (results) {
+
+                    this.noteService.createNote(id, medical.note);
+
+                    return {
+                        statusCode: 200,
+                        message: "Updated Soldier Job Successfully."
+                    }
+                }
+
+                return {
+                    statusCode: 404,
+                    message: "Not Found."
+                }
+            }).catch((error: any) => {
+                return {
+                    statusCode: 400,
+                    message: error.message
+                }
+            });;
     }
 }

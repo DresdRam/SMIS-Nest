@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Body, Query, Res } from '@nestjs/common';
-import { CreateSoldierDto } from './dto/createSoldier.dto';
+import { Controller, Get, Post, Body, Query, Res, Put } from '@nestjs/common';
 import { SoldierService } from './soldier.service';
+import { updateSoldierDto } from './dto/updateSoldier.dto';
+import { RatingDto } from './dto/rating.dto';
+import { SoldierDto } from './dto/soldier.dto';
 
 @Controller('soldier')
 export class SoldierController {
@@ -37,8 +39,28 @@ export class SoldierController {
     }
 
     @Post('/add-soldier')
-    addNewSoldier(@Body() body: CreateSoldierDto) {
+    addNewSoldier(@Body() body: SoldierDto) {
         return this.soldierService.create(body);
+    }
+
+    @Put('/update-soldier')
+    UpdateSolddier(@Query('id') id: number, @Body() body: updateSoldierDto) {
+        return this.soldierService.updateSoldier(id, body);
+    }
+
+    @Put('/update-rating')
+    UpdateSoldierRating(@Query('id') id: number, @Body() body: RatingDto) {
+        return this.soldierService.updateSoldierRating(id, body);
+    }
+
+    @Put('/update-job')
+    UpdateSoldierJob(@Query('id') id: number, @Query('job') job: string) {
+        return this.soldierService.updateSoldierJob(id, job);
+    }
+
+    @Put('/update-medical')
+    UpdateSoldierMedical(@Query('id') id: number, @Query('job') job: string) {
+        return this.soldierService.updateSoldierJob(id, job);
     }
 
 }
