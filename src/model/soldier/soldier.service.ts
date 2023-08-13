@@ -5,13 +5,11 @@ import { Soldier } from "./entity/soldier.entity";
 import { Normalize } from "src/common/util/normalize.util";
 import { UnitEnum } from "src/common/enum/unit.enum";
 import { updateSoldierDto } from "./dto/updateSoldier.dto";
-import { Enrollment } from "../enrollment/entity/enrollment.entity";
 import { RatingDto } from "./dto/rating.dto";
 import { MedicalDto } from "./dto/medical.dto";
 import { NoteService } from "../note/note.service";
 import { EnrollmentService } from "../enrollment/enrollment.service";
 import { SoldierDto } from "./dto/soldier.dto";
-import { EnrollmentDto } from "../enrollment/dto/enrollment.dto";
 
 @Injectable()
 export class SoldierService {
@@ -268,4 +266,29 @@ export class SoldierService {
                 }
             });;
     }
+    
+    async findSoldierRemoves(national_id: number) {
+        return await this.soldierRepository
+            .createQueryBuilder('s')
+            .select([
+                's.name',
+                's.national_id'
+            ])
+            .leftJoinAndSelect('s.removedHistory', 'r', 's.id = r.soldier_id')
+            .where('s.national_id = :national_id', { national_id: national_id })
+            .getOne()
+    }
+
+    async setRemovedStatus(id: number, removed: boolean, status: 1 | 0){
+        return await this.soldierRepository
+        .createQueryBuilder()
+        .update(Soldier)
+        .set({
+            removed: removed,
+            status: status
+        })
+        .where('id = :id', { id: id })
+        .execute();
+    }
+
 }

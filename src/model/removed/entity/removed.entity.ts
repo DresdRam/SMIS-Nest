@@ -16,5 +16,6 @@ export class Removed {
   returned_at: Date;
 
   @ManyToOne (() => Soldier, soldier => soldier.removedHistory)
+  @JoinColumn({ name: 'soldier_id' })
   soldier: Soldier
 }

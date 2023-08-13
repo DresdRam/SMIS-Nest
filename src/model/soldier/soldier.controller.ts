@@ -62,5 +62,9 @@ export class SoldierController {
     UpdateSoldierMedical(@Query('id') id: number, @Query('job') job: string) {
         return this.soldierService.updateSoldierJob(id, job);
     }
-
+    
+    @Get('/soldier-removes')
+    getAllSoldierRemoves(@Query('national_id') national_id: number) {
+        return this.soldierService.findSoldierRemoves(national_id);
+    }
 }
