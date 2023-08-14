@@ -19,4 +19,14 @@ export class ReportController {
         stream.pipe(res);
     }
 
+    @Get('field-journal')
+    @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    @Header('Content-Disposition', 'attachment; filename="Field Net Soldiers.xlsx"')
+    async generateFieldJournal(@Res() res: Response) {
+        
+        //const stream: ReadStream = await this.reportService.generateFieldJournal();
+
+        //stream.pipe(res);
+    }
+
 }

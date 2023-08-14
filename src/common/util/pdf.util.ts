@@ -1,5 +1,5 @@
 import { Font, generate } from '@pdfme/generator';
-import { ReadStream, createReadStream, readFileSync, writeFile, writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 import { LockerCardInputs } from 'src/model/report/dto/lockerCardInputs.dto';
 

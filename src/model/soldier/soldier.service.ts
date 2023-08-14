@@ -20,7 +20,6 @@ export class SoldierService {
         private readonly noteService: NoteService) { }
 
     async findOne(id: number) {
-
         return await this.soldierRepository
             .createQueryBuilder('s')
             .innerJoinAndSelect('s.enrollment', 'e', 's.enrollment_id = e.id')

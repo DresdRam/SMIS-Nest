@@ -19,4 +19,9 @@ export class ReportService {
         return createReadStream(outputPath);
     }
 
+    generateFieldJournal() {
+        throw new Error('Method not implemented.');
+        // Use Excel Util To Get The XLSX Workbook.
+    }
+
 }
