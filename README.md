@@ -5,5 +5,4 @@ A Nest js based SMIS for Cairo Traffic.
 
 
 # Mysql Database ERD
-
-![ERD](https://github.com/DresdRam/SMIS-Nest/assets/65346053/1de501c5-8f94-4d78-94a0-ea69a8d1fef7)
+![ERD](https://github.com/DresdRam/SMIS-Nest/assets/65346053/43e73a67-d77c-4ed8-b06f-afa729c488b8)
