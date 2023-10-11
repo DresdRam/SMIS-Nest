@@ -287,7 +287,22 @@ export class SoldierService {
             status: status
         })
         .where('id = :id', { id: id })
-        .execute();
+        .execute();``
+    }
+
+    async getSoldierLockerCard(national_id: number){
+        return await this.soldierRepository.createQueryBuilder('s')
+        .select([
+            "s.name as name",
+            "e.unit as unit",
+            "e.enrollment_date as enrollment_date",
+            "e.quit_camp_date as quit_camp_date",
+            "e.unit_job as unit_job",
+            "s.phone_number as phone_number"
+        ])
+        .innerJoinAndSelect('s.enrollment', 'e', 's.enrollment = e.id')
+        .where('s.national_id = :national_id', { national_id: national_id })
+        .getRawOne()
     }
 
 }

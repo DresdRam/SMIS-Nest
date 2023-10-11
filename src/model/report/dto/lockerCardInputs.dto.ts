@@ -9,7 +9,7 @@ export class LockerCardInputs{
     unit: string;
 
     @IsString()
-    join_camp_date: string;
+    enrollment_date: string;
 
     @IsString()
     quit_camp_date: string;

@@ -26,6 +26,8 @@ import { PhoneModule } from '../phone/phone.module';
 import { RemovedModule } from '../removed/removed.module';
 import { ImageModule } from '../image/image.module';
 import { ReportModule } from '../report/report.module';
+import { UserModule } from '../user/user.module';
+import { User } from '../user/entity/user.entity';
 
 
 @Module({
@@ -36,7 +38,7 @@ import { ReportModule } from '../report/report.module';
     username: "root",
     password: "root",
     database: "smis",
-    entities: [Soldier, Address, Governorate, Card, Confine, Enrollment, GateLog, Unit, Note, Category, PhoneNumber, Removed],
+    entities: [Soldier, Address, Governorate, Card, Confine, Enrollment, GateLog, Unit, Note, Category, PhoneNumber, Removed, User],
     synchronize: false
   }),
   SoldierModule,
@@ -52,6 +54,7 @@ import { ReportModule } from '../report/report.module';
   PhoneModule,
   RemovedModule,
   ImageModule,
-  ReportModule]
+  ReportModule,
+  UserModule]
 })
 export class AppModule { }

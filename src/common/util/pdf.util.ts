@@ -8,14 +8,15 @@ export class Pdf {
     static async generateLockerCard(lockerCardInputs: LockerCardInputs) {
 
         const templatePath: string = join(process.cwd(), 'data', 'template', 'Locker_Card_Template.json');
-        const fontPath: string = join(process.cwd(), 'data', 'fonts', 'Rubik-Italic.ttf');
+        //const fontPath: string = join(process.cwd(), 'data', 'fonts', 'Rubik-Italic.ttf');
+        const fontPath: string = join(process.cwd(), 'data', 'fonts', 'Samim-Bold.ttf');
 
         const template = JSON.parse(readFileSync(templatePath, 'utf8'));
 
         const inputs = [{
             name: lockerCardInputs.name,
             unit: lockerCardInputs.unit,
-            join_camp_date: lockerCardInputs.join_camp_date,
+            enrollment_date: lockerCardInputs.enrollment_date,
             quit_camp_date: lockerCardInputs.quit_camp_date,
             unit_job: lockerCardInputs.unit_job,
             phone_number: lockerCardInputs.phone_number,
