@@ -1,10 +1,11 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { GateService } from './gate.service';
+import { SoldierService } from '../soldier/soldier.service';
 
 @Controller('gate')
 export class GateController {
 
-    constructor(private gateService: GateService) { }
+    constructor(private readonly gateService: GateService, private readonly soldierService: SoldierService) { }
 
     @Get('/soldier-logs')
     getSoldierLogs(@Query('national_id') national_id: string, @Query('type') type: string, @Query('date') date: string) {
@@ -17,6 +18,19 @@ export class GateController {
             return this.gateService.findSoldierLogsND(parseInt(national_id), date);
         } else if (national_id) {
             return this.gateService.findSoldierLogsN(parseInt(national_id));
+        }
+
+        return {
+            statusCode: 400,
+            message: "Bad Params."
+        }
+    }
+
+    @Get('/get-soldier')
+    getGateSoldier(@Query('national_id') national_id: number) {
+
+        if (national_id) {
+            return this.soldierService.findOneGateSoldier(national_id);
         }
 
         return {

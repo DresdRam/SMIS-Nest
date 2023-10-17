@@ -13,7 +13,7 @@ export class Note {
   @Column({ type: 'datetime', nullable: true })
   date: Date;
 
-  @ManyToOne(() => Soldier, soldier => soldier.note)
+  @ManyToOne(() => Soldier, soldier => soldier.notes)
   @JoinColumn({ name: 'soldier_id' })
   soldier: Soldier;
 

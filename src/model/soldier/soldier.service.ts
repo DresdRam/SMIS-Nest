@@ -28,7 +28,6 @@ export class SoldierService {
             .innerJoinAndSelect('e.unit', 'u', 'e.unit_code = u.code')
             .innerJoinAndSelect('a.governorate', 'g', 'g.code = a.governorate_code')
             .where('s.id = :id', { id: id })
-            .andWhere("s.removed = 0")
             .getOne();
     }
 
@@ -41,7 +40,40 @@ export class SoldierService {
             .innerJoinAndSelect('e.unit', 'u', 'e.unit_code = u.code')
             .innerJoinAndSelect('a.governorate', 'g', 'g.code = a.governorate_code')
             .where('s.national_id = :national_id', { national_id: national_id })
-            .andWhere("s.removed = 0")
+            .getOne();
+    }
+
+    async findOneGateSoldier(national_id: number) {
+        return await this.soldierRepository
+            .createQueryBuilder('s')
+            .select([
+                's.id',
+                's.name',
+                's.national_id',
+                's.phone_number',
+                'e.police_number',
+                'e.holiday_group',
+                'e.enrollment_date',
+                'u.name',
+                's.qualification',
+                'g.name',
+                'e.unit_job',
+                'n.id',
+                'n.note',
+                's.rating',
+                's.rating_status',
+                's.rating_type',
+                's.medical_condition',
+                's.medical_condition_type',
+                's.removed'
+            ])
+            .innerJoin('s.enrollment', 'e', 's.enrollment_id = e.id')
+            .innerJoinAndSelect('s.address', 'a', 'a.soldier_id = s.id')
+            .innerJoin('s.phoneNumbers', 'p', 'p.soldier_id = s.id')
+            .innerJoin('s.notes', 'n', 's.id = n.soldier_id')
+            .innerJoin('e.unit', 'u', 'e.unit_code = u.code')
+            .innerJoin('a.governorate', 'g', 'g.code = a.governorate_code')
+            .where('s.national_id = :national_id', { national_id: national_id })
             .getOne();
     }
 

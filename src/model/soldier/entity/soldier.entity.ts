@@ -118,7 +118,7 @@ export class Soldier {
     confine: Confine[];
 
     @OneToMany(() => Note, note => note.soldier)
-    note: Note[];
+    notes: Note[];
 
     @OneToMany(() => Removed, removed => removed.soldier)
     removedHistory: Removed[];
