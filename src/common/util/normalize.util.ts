@@ -10,6 +10,7 @@ export class Normalize {
         new_name = new_name.replace(/عبد\s/g, 'عبد');
         new_name = new_name.replace(/الدين/g, ' الدين');
         new_name = new_name.replace(/الدين\s/g, ' الدين');
+        new_name = new_name.replace(/\*/g, '%');
 
         return new_name;
     }

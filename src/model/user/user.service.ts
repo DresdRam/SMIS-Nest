@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entity/user.entity";
 import { UserDto } from "./dto/user.dto";
 import { JwtService } from "@nestjs/jwt";
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import { jwtConstants } from "./constants/jwt.constants";
 import { unauthorized } from "src/common/response/unauthorized.response";
 

@@ -1,6 +1,7 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { GateService } from './gate.service';
 import { SoldierService } from '../soldier/soldier.service';
+import { CreateNLogs } from './dto/createNLogs.dto';
 
 @Controller('gate')
 export class GateController {
@@ -43,6 +44,18 @@ export class GateController {
     getSoldierLastLogs(@Query('national_id') national_id: string) {
         if (national_id) {
             return this.gateService.findSoldierLastLogs(parseInt(national_id))
+        }
+
+        return {
+            statusCode: 400,
+            message: "Bad Params."
+        }
+    }
+
+    @Post('/n-logs')
+    CreateNLogs(@Body() body: CreateNLogs) {
+        if (body) {
+            return this.gateService.createNLogs(body)
         }
 
         return {

@@ -128,7 +128,7 @@ export class SoldierService {
                     .then((results: any) => {
                         if (results) {
                             return {
-                                statusCode: 200,
+                                statusCode: 201,
                                 message: "Created Soldier Successfully."
                             }
                         }
@@ -319,7 +319,7 @@ export class SoldierService {
             status: status
         })
         .where('id = :id', { id: id })
-        .execute();``
+        .execute();
     }
 
     async getSoldierLockerCard(national_id: number){

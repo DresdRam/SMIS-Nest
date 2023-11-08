@@ -8,8 +8,8 @@ export class Pdf {
     static async generateLockerCard(lockerCardInputs: LockerCardInputs) {
 
         const templatePath: string = join(process.cwd(), 'data', 'template', 'Locker_Card_Template.json');
-        //const fontPath: string = join(process.cwd(), 'data', 'fonts', 'Rubik-Italic.ttf');
-        const fontPath: string = join(process.cwd(), 'data', 'fonts', 'Samim-Bold.ttf');
+        const fontPath: string = join(process.cwd(), 'data', 'fonts', 'Rubik-Italic.ttf');
+        //const fontPath: string = join(process.cwd(), 'data', 'fonts', 'Samim-Bold.ttf');
 
         const template = JSON.parse(readFileSync(templatePath, 'utf8'));
 

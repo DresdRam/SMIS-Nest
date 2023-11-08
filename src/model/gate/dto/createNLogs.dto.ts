@@ -1,15 +1,12 @@
-import { IsBoolean, IsNumber, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsNumber, IsString } from "class-validator";
 
-export class CreateLog {
-
-    @IsString()
-    date: string;
+export class CreateNLogs {
 
     @IsString()
     type: string;
 
-    @IsNumber()
-    soldier_id: number;
+    @IsNumber({}, {each: true})
+    soldiers: number[];
 
     @IsString()
     sub_type: string;
@@ -22,4 +19,7 @@ export class CreateLog {
 
     @IsString()
     time_section: string;
+
+    @IsString()
+    service_location: string;
 }

@@ -28,6 +28,8 @@ import { ImageModule } from '../image/image.module';
 import { ReportModule } from '../report/report.module';
 import { UserModule } from '../user/user.module';
 import { User } from '../user/entity/user.entity';
+import { Officer } from '../officer/entity/officer.entity';
+import { OfficerModule } from '../officer/officer.module';
 
 
 @Module({
@@ -38,23 +40,24 @@ import { User } from '../user/entity/user.entity';
     username: "root",
     password: "root",
     database: "smis",
-    entities: [Soldier, Address, Governorate, Card, Confine, Enrollment, GateLog, Unit, Note, Category, PhoneNumber, Removed, User],
+    entities: [Soldier, Address, Governorate, Card, Confine, Enrollment, GateLog, Unit, Note, Category, PhoneNumber, Removed, User, Officer],
     synchronize: false
   }),
-  SoldierModule,
-  AddressModule,
-  GovernorateModule,
-  CardModule,
-  ConfineModule,
-  EnrollmentModule,
-  GateModule,
-  UnitModule,
-  NoteModule,
-  CategoryModule,
-  PhoneModule,
-  RemovedModule,
-  ImageModule,
-  ReportModule,
-  UserModule]
+    SoldierModule,
+    AddressModule,
+    GovernorateModule,
+    CardModule,
+    ConfineModule,
+    EnrollmentModule,
+    GateModule,
+    UnitModule,
+    NoteModule,
+    CategoryModule,
+    PhoneModule,
+    RemovedModule,
+    ImageModule,
+    ReportModule,
+    UserModule,
+    OfficerModule]
 })
 export class AppModule { }

@@ -1,5 +1,7 @@
+import { Transform } from "class-transformer";
+import moment from "moment";
 import { Soldier } from "src/model/soldier/entity/soldier.entity";
-import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
+import { Entity, Column, JoinColumn, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
 
 @Entity()
 export class GateLog {
@@ -7,7 +9,7 @@ export class GateLog {
   id: number;
 
   @Column({ type: 'datetime', nullable: true })
-  date: Date;
+  date: string;
 
   @Column({ nullable: true })
   type: string;
@@ -23,6 +25,9 @@ export class GateLog {
 
   @Column({ nullable: true })
   sub_type: number;
+
+  @Column({ nullable: true })
+  service_location: string;
 
   @ManyToOne(() => Soldier, soldier => soldier.gateLogs)
   @JoinColumn({ name: "soldier_id" })
