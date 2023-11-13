@@ -35,19 +35,30 @@ import { RoleModule } from '../role/role.module';
 import { UserRole } from '../user_role/entity/user_role.entity';
 import { Role } from '../role/entity/role.entity';
 import { RolesMiddleware } from '../role/middleware/roles.middleware';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
-    type: "mysql",
-    host: "localhost",
-    port: 3306,
-    username: "root",
-    password: "root",
-    database: "smis",
-    entities: [Soldier, Address, Governorate, Card, Confine, Enrollment, GateLog, Unit, Note, Category, PhoneNumber, Removed, User, Role, UserRole, Officer],
-    synchronize: false
-  }),
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env'
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          type: config.get<any>('TYPE'),
+          host: config.get<string>('HOST'),
+          port: Number(config.get('PORT')),
+          username: config.get<string>('DATABASE_USERNAME'),
+          password: config.get<string>('DATABASE_PASSWORD'),
+          database: config.get<string>('DATABASE_NAME'),
+          synchronize: false,
+          entities: [Soldier, Address, Governorate, Card, Confine, Enrollment, GateLog, Unit, Note, Category, PhoneNumber, Removed, User, Role, UserRole, Officer]
+        }
+      }
+    }),
     SoldierModule,
     AddressModule,
     GovernorateModule,
