@@ -21,7 +21,7 @@ SMIS API is an information system api to handle a lot of things:
 
 #### 2. Make sure you have node.js on your device .
 
-##### Download [Node.js](quora.com/profile/Ashish-Kulkarni-100)
+##### Download [Node.js](https://nodejs.org/en/download/)
 #### 3. Install all the dependencies.
 
 ```bash
