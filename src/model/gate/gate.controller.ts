@@ -1,8 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { GateService } from './gate.service';
 import { SoldierService } from '../soldier/soldier.service';
 import { CreateNLogs } from './dto/createNLogs.dto';
+import { Roles } from 'src/common/enum/role.enum';
+import { Role } from '../role/entity/role.entity';
+import { RolesGuard } from 'src/common/guard/AuthorizationGuard.guard';
 
+@UseGuards(RolesGuard([new Role(Roles.ADMIN), new Role(Roles.MANAGER)]))
 @Controller('gate')
 export class GateController {
 
@@ -32,6 +36,19 @@ export class GateController {
 
         if (national_id) {
             return this.soldierService.findOneGateSoldier(national_id);
+        }
+
+        return {
+            statusCode: 400,
+            message: "Bad Params."
+        }
+    }
+
+    @Get('/get-all')
+    getAllLogs(@Query('page') page: number = 1, @Query('size') size: number = 20) {
+
+        if (page && size) {
+            return this.gateService.findManyLogs(page, size);
         }
 
         return {

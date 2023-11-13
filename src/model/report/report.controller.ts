@@ -1,9 +1,13 @@
-import { Body, Controller, Get, Header, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Header, Query, Res, UseGuards } from '@nestjs/common';
 import { LockerCardInputs } from './dto/lockerCardInputs.dto';
 import { ReportService } from './report.service';
 import { Response } from 'express';
 import { ReadStream } from 'fs';
+import { Roles } from 'src/common/enum/role.enum';
+import { Role } from '../role/entity/role.entity';
+import { RolesGuard } from 'src/common/guard/AuthorizationGuard.guard';
 
+@UseGuards(RolesGuard([new Role(Roles.ADMIN), new Role(Roles.MANAGER)]))
 @Controller('report')
 export class ReportController {
 

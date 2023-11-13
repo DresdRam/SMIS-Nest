@@ -1,4 +1,4 @@
-export enum Role {
+export enum Roles {
     ADMIN = 'ADMIN',
     MANAGER = 'MANAGER',
     MANDOOB = 'MANDOOB',
@@ -6,5 +6,6 @@ export enum Role {
     SEGELAT = 'SEGELAT',
     PHOTOGRAPHER = 'PHOTOGRAPHER',
     MEDICAL = 'MEDICAL',
-    CARD = 'CARD'
+    CARD = 'CARD',
+    ANYUSER = 'ANYUSER'
 }

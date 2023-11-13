@@ -1,8 +1,13 @@
-import { Body, Controller, Delete, Get, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CardService } from './card.service';
 import { createCard } from './dto/createCard.dto';
 import { updateCard } from './dto/updateCard.dto';
+import { RolesGuard } from 'src/common/guard/AuthorizationGuard.guard';
+import { Roles } from 'src/common/enum/role.enum';
+import { Role } from '../role/entity/role.entity';
 
+
+@UseGuards(RolesGuard([new Role(Roles.ADMIN)]))
 @Controller('card')
 export class CardController {
 

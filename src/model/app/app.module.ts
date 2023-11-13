@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Soldier } from '../soldier/entity/soldier.entity';
 import { Address } from '../address/entity/address.entity';
@@ -30,6 +30,11 @@ import { UserModule } from '../user/user.module';
 import { User } from '../user/entity/user.entity';
 import { Officer } from '../officer/entity/officer.entity';
 import { OfficerModule } from '../officer/officer.module';
+import { UserRoleModule } from '../user_role/user_role.module';
+import { RoleModule } from '../role/role.module';
+import { UserRole } from '../user_role/entity/user_role.entity';
+import { Role } from '../role/entity/role.entity';
+import { RolesMiddleware } from '../role/middleware/roles.middleware';
 
 
 @Module({
@@ -40,7 +45,7 @@ import { OfficerModule } from '../officer/officer.module';
     username: "root",
     password: "root",
     database: "smis",
-    entities: [Soldier, Address, Governorate, Card, Confine, Enrollment, GateLog, Unit, Note, Category, PhoneNumber, Removed, User, Officer],
+    entities: [Soldier, Address, Governorate, Card, Confine, Enrollment, GateLog, Unit, Note, Category, PhoneNumber, Removed, User, Role, UserRole, Officer],
     synchronize: false
   }),
     SoldierModule,
@@ -58,6 +63,14 @@ import { OfficerModule } from '../officer/officer.module';
     ImageModule,
     ReportModule,
     UserModule,
-    OfficerModule]
+    OfficerModule,
+    UserRoleModule,
+    RoleModule]
 })
-export class AppModule { }
+export class AppModule {
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RolesMiddleware).forRoutes('*')
+  }
+
+}

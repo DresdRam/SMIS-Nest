@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
+import { UserRole } from "src/model/user_role/entity/user_role.entity";
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm"
 
 @Entity()
 export class User {
@@ -15,5 +16,9 @@ export class User {
         nullable: false,
     })
     password: string;
+
+    @OneToOne(() => UserRole, (userRole) => userRole.user)
+    @JoinColumn({ name: 'id' })
+    userRole: UserRole;
 
 }

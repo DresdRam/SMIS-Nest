@@ -1,9 +1,7 @@
 import { IsNumber, IsString } from "class-validator";
+import { Ranks } from "src/common/enum/policeRanks.enum copy";
 
 export class OfficerDto{
-
-    @IsNumber()
-    id: number;
 
     @IsString()
     name: string;
@@ -12,6 +10,6 @@ export class OfficerDto{
     phone: string;
 
     @IsString()
-    rank: string;
+    rank: Ranks;
 
 }

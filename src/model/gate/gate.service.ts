@@ -9,7 +9,6 @@ import { GateSubTypes } from 'src/common/enum/gateSubtypes.enum';
 import { Soldier } from '../soldier/entity/soldier.entity';
 import { CreateNLogs } from './dto/createNLogs.dto';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import moment from 'moment';
 
 @Injectable()
 export class GateService {
@@ -17,21 +16,25 @@ export class GateService {
     constructor(@InjectRepository(GateLog) private gateRepository: Repository<GateLog>, @InjectRepository(Soldier) private soldierRepository: Repository<Soldier>) { }
 
     async findSoldierLogsN(national_id: number) {
-        return this.reformSoldierLogs(await this.gateRepository
+        return await this.gateRepository
             .createQueryBuilder('g')
             .select([
-                'g.id as id',
-                'g.date as date',
-                'g.type as type',
-                'g.soldier_id as soldier_id',
-                'g.sub_type as sub_type',
-                'g.section as section',
-                'g.overtime as overtime',
-                'g.time_section as time_section'
+                'g.id',
+                'g.date',
+                'g.type',
+                's.name',
+                's.national_id',
+                'g.sub_type',
+                'g.section',
+                'g.overtime',
+                'g.time_section',
+                'g.service_location'
             ])
             .innerJoin('g.soldier', 's', 'g.soldier_id = s.id')
             .where('s.national_id = :national_id', { national_id: national_id })
-            .getRawMany());
+            .take(500)
+            .orderBy('g.id', "DESC")
+            .getMany()
     }
 
     async findSoldierLogsNT(national_id: number, type: string) {
@@ -123,6 +126,28 @@ export class GateService {
             .getRawOne();
     }
 
+    async findManyLogs(page: number, size: number) {
+        return await this.gateRepository
+            .createQueryBuilder('g')
+            .select([
+                'g.id',
+                'g.date',
+                'g.type',
+                's.name',
+                's.national_id',
+                'g.sub_type',
+                'g.section',
+                'g.overtime',
+                'g.time_section',
+                'g.service_location'
+            ])
+            .innerJoin('g.soldier', 's', 'g.soldier_id = s.id')
+            .take(size)
+            .skip((page - 1) * size)
+            .orderBy('g.id', "DESC")
+            .getMany();
+    }
+
     async createLog(body: CreateLog) {
 
         const subtype: number = (body.sub_type) ? GateSubTypes[body.sub_type] : 6;
@@ -154,7 +179,7 @@ export class GateService {
 
             const logs: GateLog[] = [];
 
-            for(const nid of body.soldiers){
+            for (const nid of body.soldiers) {
 
                 const soldier = await this.soldierRepository
                     .createQueryBuilder('s')
@@ -188,7 +213,19 @@ export class GateService {
                 .insert()
                 .into(GateLog)
                 .values(logs)
-                .execute()
+                .execute().then((res: InsertResult) => {
+                    if (res) {
+                        return {
+                            statusCode: 201,
+                            message: "Inserted Successfully."
+                        }
+                    }
+
+                    return {
+                        statusCode: 400,
+                        message: "Failed To Complete Operation."
+                    }
+                })
         }
         catch (err: any) {
             return {

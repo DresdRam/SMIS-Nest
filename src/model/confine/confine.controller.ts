@@ -1,7 +1,11 @@
-import { Controller, Get, Query, Post, Body } from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, UseGuards } from '@nestjs/common';
 import { ConfineService } from './confine.service';
 import { CreateConfine } from './dto/createConfine.dto';
+import { Roles } from 'src/common/enum/role.enum';
+import { Role } from '../role/entity/role.entity';
+import { RolesGuard } from 'src/common/guard/AuthorizationGuard.guard';
 
+@UseGuards(RolesGuard([new Role(Roles.ADMIN), new Role(Roles.RATING)]))
 @Controller('confine')
 export class ConfineController {
 
