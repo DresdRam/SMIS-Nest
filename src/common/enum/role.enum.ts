@@ -7,5 +7,6 @@ export enum Roles {
     PHOTOGRAPHER = 'PHOTOGRAPHER',
     MEDICAL = 'MEDICAL',
     CARD = 'CARD',
+    GATE = 'GATE',
     ANYUSER = 'ANYUSER'
 }

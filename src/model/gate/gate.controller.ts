@@ -6,7 +6,7 @@ import { Roles } from 'src/common/enum/role.enum';
 import { Role } from '../role/entity/role.entity';
 import { RolesGuard } from 'src/common/guard/AuthorizationGuard.guard';
 
-@UseGuards(RolesGuard([new Role(Roles.ADMIN), new Role(Roles.MANAGER)]))
+@UseGuards(RolesGuard([new Role(Roles.ADMIN), new Role(Roles.MANAGER), new Role(Roles.GATE)]))
 @Controller('gate')
 export class GateController {
 

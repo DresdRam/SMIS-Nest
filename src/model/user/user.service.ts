@@ -1,14 +1,12 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "./entity/user.entity";
-import { UserDto } from "./dto/user.dto";
 import { JwtService } from "@nestjs/jwt";
-import { compare } from 'bcryptjs';
-import { jwtConstants } from "./constants/jwt.constants";
-import { unauthorized } from "src/common/response/unauthorized.response";
-import { Role } from "../role/entity/role.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { compare, hash } from 'bcryptjs';
+import { Repository } from "typeorm";
 import { RoleService } from "../role/role.service";
+import { jwtConstants } from "./constants/jwt.constants";
+import { UserDto } from "./dto/user.dto";
+import { User } from "./entity/user.entity";
 
 @Injectable()
 export class UserService {
@@ -31,8 +29,14 @@ export class UserService {
             .where('u.username = :username', { username: username })
             .getOne()
 
-        if (!this.comparePassword(password, databaseUser.password)) {
-            throw unauthorized()
+        if(!databaseUser){
+            throw new UnauthorizedException()
+        }
+
+        const authenticated = await compare(password, databaseUser.password)
+
+        if (!authenticated) {
+            throw new UnauthorizedException()
         }
 
         const payload = { role: databaseUser.userRole.role.role }
@@ -63,10 +67,8 @@ export class UserService {
         }
     }
 
-    private async comparePassword(password: string, hashCode: string) {
-
-        return await compare(password, hashCode)
-
+    async hashPassword(password: string, salt: number = 10){
+        return await hash(password, salt)
     }
 
 }
